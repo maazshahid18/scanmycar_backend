@@ -17,7 +17,7 @@ export class VehiclesService {
     const user = await this.usersService.createOrGetUser(ownerName, ownerMobile);
 
     const qrCodeId = Math.random().toString(36).substring(2, 10);
-    const url = `http://localhost:3000/scan/${qrCodeId}`;
+    const url = `https://scanmycar-frontend.vercel.app/scan/${qrCodeId}`;
     const qrImage = await QRCode.toDataURL(url);
 
     return this.prisma.vehicle.create({
