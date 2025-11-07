@@ -18,13 +18,13 @@ export class VehiclesController {
     return this.vehiclesService.lookupVehicle(vehicleNumber, mobileNumber);
   }
 
-  @Get(':qrCodeId')
-  getVehicle(@Param('qrCodeId') qrCodeId: string) {
-    return this.vehiclesService.getByQrId(qrCodeId);
-  }
-
   @Get('owner/:ownerId')
   getOwnerVehicles(@Param('ownerId') ownerId: string) {
     return this.vehiclesService.getByOwner(Number(ownerId));
+  }
+
+  @Get(':qrCodeId')
+  getVehicle(@Param('qrCodeId') qrCodeId: string) {
+    return this.vehiclesService.getByQrId(qrCodeId);
   }
 }
