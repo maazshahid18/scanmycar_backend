@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                Int                @id @default(autoincrement())
+  name              String
+  mobile            String             @unique
+  vehicles          Vehicle[]
+  alerts            Alert[]
+  pushSubscriptions PushSubscription[]
+}
+
+model Vehicle {
+  id            Int      @id @default(autoincrement())
+  vehicleNumber String
+  qrCodeId      String   @unique
+  qrImage       String   @db.LongText
+  ownerId       Int
+  owner         User     @relation(fields: [ownerId], references: [id])
+  alerts        Alert[]
+  createdAt     DateTime @default(now())
+}
+
+model Alert {
+  id        Int     @id @default(autoincrement())
+  message   String
+  vehicleId Int
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+}
+
+model PushSubscription {
+  id        Int      @id @default(autoincrement())
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
