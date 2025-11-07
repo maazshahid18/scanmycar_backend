@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Query } from '@nestjs/common';
 import { VehiclesService } from './vehicles.service';
 
 @Controller('vehicles')
@@ -8,6 +8,14 @@ export class VehiclesController {
   @Post('register')
   register(@Body() body: any) {
     return this.vehiclesService.registerVehicle(body);
+  }
+
+  @Get('lookup')
+  lookupVehicle(
+    @Query('vehicleNumber') vehicleNumber: string,
+    @Query('mobileNumber') mobileNumber: string,
+  ) {
+    return this.vehiclesService.lookupVehicle(vehicleNumber, mobileNumber);
   }
 
   @Get(':qrCodeId')
