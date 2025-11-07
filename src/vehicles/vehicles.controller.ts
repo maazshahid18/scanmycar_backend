@@ -10,13 +10,7 @@ export class VehiclesController {
     return this.vehiclesService.registerVehicle(body);
   }
 
-  @Get('lookup')
-  lookupVehicle(
-    @Query('vehicleNumber') vehicleNumber: string,
-    @Query('mobileNumber') mobileNumber: string,
-  ) {
-    return this.vehiclesService.lookupVehicle(vehicleNumber, mobileNumber);
-  }
+
 
   @Get(':qrCodeId')
   getVehicle(@Param('qrCodeId') qrCodeId: string) {

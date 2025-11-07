@@ -43,32 +43,4 @@ export class VehiclesService {
       orderBy: { id: 'desc' },
     });
   }
-
-  async lookupVehicle(vehicleNumber: string, mobileNumber: string) {
-    // Find the vehicle with matching vehicle number and owner's mobile number
-    const vehicle = await this.prisma.vehicle.findFirst({
-      where: {
-        vehicleNumber: vehicleNumber,
-        owner: {
-          mobile: mobileNumber,
-        },
-      },
-      include: {
-        owner: true,
-      },
-    });
-
-    if (!vehicle) {
-      return null;
-    }
-
-    // Return vehicle data with mobile number for notification subscription
-    return {
-      _id: vehicle.id.toString(),
-      vehicleNumber: vehicle.vehicleNumber,
-      qrCodeId: vehicle.qrCodeId,
-      qrImage: vehicle.qrImage,
-      mobileNumber: vehicle.owner.mobile,
-    };
-  }
 }
