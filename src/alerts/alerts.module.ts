@@ -7,9 +7,10 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 @Module({
   imports: [
     PrismaModule,
-    NotificationsModule,   // ✅ This fixes dependency injection
+    NotificationsModule, // ✅ Enables sending notifications and handling replies
   ],
   controllers: [AlertsController],
   providers: [AlertsService],
+  exports: [AlertsService], // ✅ Allow usage in other modules if needed
 })
 export class AlertsModule {}

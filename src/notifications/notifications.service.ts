@@ -21,7 +21,7 @@ export class NotificationsService {
     });
   }
 
-  async sendToUser(userId: number, payload: { title: string; body: string; url?: string }) {
+  async sendToUser(userId: number, payload: { title: string; body: string; url?: string; alertId?: number }) {
     console.log(`[NotificationsService] Sending to user ${userId}:`, payload);
     const subs = await this.prisma.pushSubscription.findMany({ where: { userId } });
     console.log(`[NotificationsService] Found ${subs.length} subscriptions`);

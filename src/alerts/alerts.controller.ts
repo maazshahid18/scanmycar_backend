@@ -21,4 +21,21 @@ export class AlertsController {
 
     return this.alertsService.sendAlert(Number(vehicleId), message.trim());
   }
+  // ✅ New endpoint for quick replies
+  @Post('reply')
+  async reply(@Body() body: any) {
+    console.log("Incoming Reply Payload:", body);
+
+    const { alertId, reply } = body;
+
+    if (!alertId || isNaN(Number(alertId))) {
+      throw new Error("Invalid or missing alertId");
+    }
+
+    if (!reply || typeof reply !== "string" || reply.trim().length === 0) {
+      throw new Error("Invalid or empty reply");
+    }
+
+    return this.alertsService.addReply(Number(alertId), reply.trim());
+  }
 }

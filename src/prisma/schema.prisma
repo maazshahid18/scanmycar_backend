@@ -28,13 +28,16 @@ model Vehicle {
 }
 
 model Alert {
-  id        Int     @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   message   String
   vehicleId Int
-  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
 
   userId Int?
-  user   User? @relation(fields: [userId], references: [id])
+  user   User?      @relation(fields: [userId], references: [id])
+
+  reply     String?  // ✅ New field to store quick reply message
+  createdAt DateTime @default(now())
 }
 
 model PushSubscription {

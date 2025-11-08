@@ -24,8 +24,8 @@ export class AlertsService {
       data: {
         message,
         vehicle: { connect: { id: vehicleId } },
-        user: { connect: { id: vehicle.owner.id } }
-      }
+        user: { connect: { id: vehicle.owner.id } },
+      },
     });
 
     // ✅ Trigger Push Notification
@@ -33,12 +33,33 @@ export class AlertsService {
       await this.notifications.sendToUser(vehicle.owner.id, {
         title: `ScanMyCar: ${vehicle.vehicleNumber}`,
         body: message,
-        url: `/dashboard`
+        url: `/dashboard`,
+        alertId: alert.id, // ✅ Include alert ID for reply tracking
       });
     } catch (err) {
-      console.error("Push notification failed:", err?.message || err);
+      console.error('Push notification failed:', err?.message || err);
     }
 
     return alert;
+  }
+
+  // ✅ New method to handle quick replies
+  async addReply(alertId: number, reply: string) {
+    // Validate if alert exists
+    const alert = await this.prisma.alert.findUnique({ where: { id: alertId } });
+    if (!alert) {
+      throw new Error('Alert not found');
+    }
+
+    // Update alert with reply
+    const updatedAlert = await this.prisma.alert.update({
+      where: { id: alertId },
+      data: { reply },
+    });
+
+    // Notify original sender if needed (future improvement)
+    console.log(`Reply added to alert ${alertId}: ${reply}`);
+
+    return updatedAlert;
   }
 }
