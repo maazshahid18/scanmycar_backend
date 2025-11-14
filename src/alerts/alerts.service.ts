@@ -9,8 +9,11 @@ export class AlertsService {
     private notifications: NotificationsService,
   ) {}
 
+  /**
+   * SEND ALERT TO VEHICLE OWNER
+   */
   async sendAlert(vehicleId: number, message: string) {
-    // Fetch vehicle with owner
+    // Fetch vehicle + owner
     const vehicle = await this.prisma.vehicle.findUnique({
       where: { id: vehicleId },
       include: { owner: true },
@@ -20,21 +23,23 @@ export class AlertsService {
       throw new Error('Vehicle or owner not found');
     }
 
+    const ownerId = vehicle.owner.id;
+
+    // Create alert
     const alert = await this.prisma.alert.create({
       data: {
         message,
-        vehicle: { connect: { id: vehicleId } },
-        user: { connect: { id: vehicle.owner.id } },
+        vehicleId,
       },
     });
 
-    // ✅ Trigger Push Notification
+    // Send push notification
     try {
-      await this.notifications.sendToUser(vehicle.owner.id, {
+      await this.notifications.sendToUser(ownerId, {
         title: `ScanMyCar: ${vehicle.vehicleNumber}`,
         body: message,
         url: `/dashboard`,
-        alertId: alert.id, // ✅ Include alert ID for reply tracking
+        alertId: alert.id,
       });
     } catch (err) {
       console.error('Push notification failed:', err?.message || err);
@@ -43,21 +48,30 @@ export class AlertsService {
     return alert;
   }
 
-  // ✅ New method to handle quick replies
+  /**
+   * ADD REPLY TO ALERT
+   */
   async addReply(alertId: number, reply: string) {
-    // Validate if alert exists
-    const alert = await this.prisma.alert.findUnique({ where: { id: alertId } });
-    if (!alert) {
-      throw new Error('Alert not found');
-    }
-
-    // Update alert with reply
-    const updatedAlert = await this.prisma.alert.update({
+    // Ensure alert exists
+    const alert = await this.prisma.alert.findUnique({
       where: { id: alertId },
-      data: { reply },
+      include: {
+        vehicle: {
+          include: { owner: true },
+        },
+      },
     });
 
-    // Notify original sender if needed (future improvement)
+    if (!alert) throw new Error('Alert not found');
+    if (!alert.vehicle?.owner)
+      throw new Error('Vehicle owner not found for this alert');
+
+    const updatedAlert = await this.prisma.alert.update({
+      where: { id: alertId },
+      data: ({ reply } as any),
+    });
+
+    // Notify sender in future (not implemented yet)
     console.log(`Reply added to alert ${alertId}: ${reply}`);
 
     return updatedAlert;
