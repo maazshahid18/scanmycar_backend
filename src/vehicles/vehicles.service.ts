@@ -68,6 +68,7 @@ export class VehiclesService {
     // Return vehicle data with mobile number for notification subscription
     return {
       _id: vehicle.id.toString(),
+      ownerId: vehicle.owner.id, // ✅ Include owner ID for frontend
       vehicleNumber: vehicle.vehicleNumber,
       qrCodeId: vehicle.qrCodeId,
       qrImage: vehicle.qrImage,
