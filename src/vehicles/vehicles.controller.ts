@@ -3,7 +3,7 @@ import { VehiclesService } from './vehicles.service';
 
 @Controller('vehicles')
 export class VehiclesController {
-  constructor(private vehiclesService: VehiclesService) {}
+  constructor(private vehiclesService: VehiclesService) { }
 
   @Post('register')
   register(@Body() body: any) {
@@ -26,5 +26,10 @@ export class VehiclesController {
   @Get(':qrCodeId')
   getVehicle(@Param('qrCodeId') qrCodeId: string) {
     return this.vehiclesService.getByQrId(qrCodeId);
+  }
+
+  @Get('stats/:ownerId')
+  getStats(@Param('ownerId') ownerId: string) {
+    return this.vehiclesService.getScanStats(Number(ownerId));
   }
 }

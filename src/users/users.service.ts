@@ -3,7 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async createOrGetUser(name: string, mobile: string) {
     let user = await this.prisma.user.findUnique({
@@ -23,6 +23,13 @@ export class UsersService {
     return this.prisma.user.findUnique({
       where: { id },
       include: { vehicles: true },
+    });
+  }
+
+  async updateEmergencyContact(userId: number, contact: string) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { emergencyContact: contact },
     });
   }
 }

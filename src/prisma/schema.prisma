@@ -11,6 +11,7 @@ model User {
   id                Int                @id @default(autoincrement())
   name              String
   mobile            String             @unique
+  emergencyContact  String?            // ✅ Emergency contact number
   vehicles          Vehicle[]
   alerts            Alert[]
   pushSubscriptions PushSubscription[]
@@ -24,7 +25,15 @@ model Vehicle {
   ownerId       Int
   owner         User     @relation(fields: [ownerId], references: [id])
   alerts        Alert[]
+  scanLogs      ScanLog[] // ✅ Relation to scan logs
   createdAt     DateTime @default(now())
+}
+
+model ScanLog {
+  id        Int      @id @default(autoincrement())
+  vehicleId Int
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
+  scannedAt DateTime @default(now())
 }
 
 model Alert {
