@@ -1,9 +1,9 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { AlertsService } from './alerts.service';
 
 @Controller('alerts')
 export class AlertsController {
-  constructor(private alertsService: AlertsService) {}
+  constructor(private alertsService: AlertsService) { }
 
   @Post('send')
   async send(@Body() body: any) {
@@ -37,5 +37,10 @@ export class AlertsController {
     }
 
     return this.alertsService.addReply(Number(alertId), reply.trim());
+  }
+
+  @Get('owner/:ownerId')
+  async getOwnerAlerts(@Param('ownerId') ownerId: string) {
+    return this.alertsService.getAlertsByOwner(Number(ownerId));
   }
 }

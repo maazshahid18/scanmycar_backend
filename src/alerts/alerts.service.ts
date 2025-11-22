@@ -7,7 +7,7 @@ export class AlertsService {
   constructor(
     private prisma: PrismaService,
     private notifications: NotificationsService,
-  ) {}
+  ) { }
 
   /**
    * SEND ALERT TO VEHICLE OWNER
@@ -75,5 +75,24 @@ export class AlertsService {
     console.log(`Reply added to alert ${alertId}: ${reply}`);
 
     return updatedAlert;
+  }
+
+  /**
+   * GET ALERTS BY OWNER
+   */
+  async getAlertsByOwner(ownerId: number) {
+    return this.prisma.alert.findMany({
+      where: {
+        vehicle: {
+          ownerId: ownerId,
+        },
+      },
+      include: {
+        vehicle: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
   }
 }
